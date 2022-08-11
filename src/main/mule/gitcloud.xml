@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="e711a4fc-4642-4e50-9a91-bf6e42e6635f" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="201239de-3641-4415-8389-7ee15fa097d4" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="root" />
+	</db:config>
+	<flow name="gitcloudFlow" doc:id="ed7c9491-76ee-45b7-91a4-39a3af0f322c" >
+		<http:listener doc:name="Listener" doc:id="b5fd4f55-e763-4391-926d-03ed9a424fdd" config-ref="HTTP_Listener_config" path="/git"/>
+		<db:select doc:name="Select" doc:id="6e971e9e-e8d7-4158-b9a2-5970b71493d8" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM craftshoppingnebiha.products;]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="ba7da302-c869-4ae8-b2d1-6471f08cd01d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
